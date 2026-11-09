@@ -1,7 +1,7 @@
 ﻿using FlottaAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 
 namespace FlottaAPI.Controllers
 {
@@ -67,7 +67,7 @@ namespace FlottaAPI.Controllers
             }
         }
         [HttpPost("PostSofor")]
-        public IActionResult PostSofor( Sofor sofor)
+        public IActionResult PostSofor(Sofor sofor)
         {
             try
             {
@@ -94,7 +94,28 @@ namespace FlottaAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpGet("SoforJarmu/{id}")]
+        public IActionResult GetSoforJarmu(int id)
+        {
+            try
+            {
+                Sofor vane = _context.Sofors.FirstOrDefault(t => t.Id == id);
+                if (vane == null)
+                {
+                    return NotFound("Hiányzó sofőr.");
+                }
 
+                var result = _context.Kikuldottjarmus
+                    .Where(j => j.SoforNavigation.Id == id)
+                    .Select(j => j.Gepjarmu)
+                    .ToList();
 
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
