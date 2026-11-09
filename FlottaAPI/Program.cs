@@ -19,8 +19,11 @@ namespace FlottaAPI
                 string connstr = builder.Configuration.GetConnectionString("FlottaConnection");
                 options.UseMySql(connstr, ServerVersion.AutoDetect(connstr));
             });
+            builder.Services.AddEndpointsApiExplorer();
+            
 
             var app = builder.Build();
+            app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
