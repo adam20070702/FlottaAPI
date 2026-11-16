@@ -61,7 +61,12 @@ namespace FlottaAPI.Controllers
         {
             try
             {
+                if (_context.Gepjarmus.FirstOrDefault (g=>g.Id == id) is null)
+                {
+                    return NotFound("Hiányzó gépjármű");
+                }
                 List<Sofor> result = _context.Kikuldottjarmus.Include(k => k.SoforNavigation).Include(k => k.Gepjarmu).Where(b => b.GepjarmuId == id).Select(k => k.SoforNavigation).ToList();
+
                 return Ok(result);
             }
             catch (Exception ex)
